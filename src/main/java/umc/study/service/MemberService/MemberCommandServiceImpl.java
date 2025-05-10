@@ -41,6 +41,10 @@ public class MemberCommandServiceImpl implements MemberCommandService{
     @Transactional
     public Member joinMember(MemberRequestDTO.JoinDto request) {
 
+        if(memberRepository.findByEmail(request.getEmail()).isPresent()) {
+            throw new MemberHandler(ErrorStatus.DUPLICATE_JOIN_REQUEST);
+        }
+
         Member newMember = MemberConverter.toMember(request);
         newMember.encodePassword(passwordEncoder.encode(request.getPassword()));
 
